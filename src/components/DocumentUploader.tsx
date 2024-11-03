@@ -41,18 +41,29 @@ export const DocumentUploader: React.FC<DocumentUploaderProps> = ({
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 0.3 }}
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: '16px'
+            }}
           >
             {processing ? (
-              <CircularProgress size={48} className="upload-icon" />
+              <CircularProgress size={64} className="upload-icon" />
             ) : (
               <CloudUploadIcon className="upload-icon" />
             )}
-            <Typography variant="h6" gutterBottom>
+            <Typography variant="h5" sx={{ fontWeight: 500, color: '#1d1d1f' }}>
               {isDragActive ? 'Drop your document here' : 'Drag & drop your document'}
             </Typography>
-            <Typography variant="body2" color="text.secondary">
-              Supports PDF, Images, and Word documents
+            <Typography variant="body2" className="support-text">
+              Supports the following file types:
             </Typography>
+            <Box sx={{ display: 'flex', gap: 1, mt: 1 }}>
+              <span className="file-type-badge">PDF</span>
+              <span className="file-type-badge">Images</span>
+              <span className="file-type-badge">Word</span>
+            </Box>
             {error && (
               <Typography color="error" sx={{ mt: 2 }}>
                 {error}
