@@ -5,11 +5,12 @@ import {
   CircularProgress, 
   TextField,
   Paper,
-  LinearProgress
+  LinearProgress,
 } from '@mui/material';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ProcessedDocument } from '../types/document';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 
 interface ProcessingResultsProps {
   document: ProcessedDocument | null;
@@ -26,71 +27,61 @@ export const ProcessingResults: React.FC<ProcessingResultsProps> = ({
 }) => {
   if (!document && !processing) {
     return (
-      <Paper elevation={0} className="document-section">
-        <Box p={4}>
-          <Typography variant="h5" gutterBottom sx={{ color: '#1d1d1f', fontWeight: 600 }}>
-            How It Works
-          </Typography>
-          
-          <Box className="feature-highlight">
-            <span className="feature-highlight-icon">📄</span>
-            <Box>
-              <Typography className="feature-highlight-text">
-                Upload Your Document
-              </Typography>
-              <Typography className="step-tip">
-                Drag and drop or click to upload PDF, images, or Word documents
-              </Typography>
-            </Box>
-          </Box>
-
-          <Box className="feature-highlight">
-            <span className="feature-highlight-icon">🤖</span>
-            <Box>
-              <Typography className="feature-highlight-text">
-                AI Processing
-              </Typography>
-              <Typography className="step-tip">
-                Our AI will automatically extract key information from your document
-              </Typography>
-            </Box>
-          </Box>
-
-          <Box className="feature-highlight">
-            <span className="feature-highlight-icon">✅</span>
-            <Box>
-              <Typography className="feature-highlight-text">
-                Review & Confirm
-              </Typography>
-              <Typography className="step-tip">
-                Verify the extracted information and make any necessary adjustments
-              </Typography>
-            </Box>
-          </Box>
-
-          <Box mt={4}>
-            <Typography variant="h6" gutterBottom sx={{ color: '#1d1d1f' }}>
-              Supported Document Types
+      <Paper elevation={0} className="document-section" sx={{ height: '100%' }}>
+        <Box 
+          display="flex" 
+          flexDirection="column" 
+          alignItems="center" 
+          justifyContent="center"
+          sx={{ 
+            height: '100%',
+            p: 4,
+            background: 'linear-gradient(135deg, rgba(175, 82, 222, 0.03), rgba(255, 45, 85, 0.03))'
+          }}
+        >
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+            style={{ textAlign: 'center' }}
+          >
+            <motion.div
+              animate={{ 
+                y: [0, -10, 0],
+                rotate: [0, -5, 5, 0]
+              }}
+              transition={{ 
+                duration: 3,
+                repeat: Infinity,
+                repeatType: "reverse",
+                ease: "easeInOut"
+              }}
+            >
+              <AutoAwesomeIcon 
+                sx={{ 
+                  fontSize: 48, 
+                  color: '#AF52DE',
+                  mb: 2,
+                  filter: 'drop-shadow(0 4px 12px rgba(175, 82, 222, 0.3))'
+                }} 
+              />
+            </motion.div>
+            <Typography 
+              variant="h6" 
+              sx={{
+                background: 'linear-gradient(135deg, #AF52DE, #FF2D55)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                fontWeight: 600,
+                mb: 2
+              }}
+            >
+              AI-Powered Document Processing
             </Typography>
-            <Box display="flex" gap={2} mt={2}>
-              <Box className="file-type-badge">
-                <Typography>📄 PDF Files</Typography>
-              </Box>
-              <Box className="file-type-badge">
-                <Typography>🖼️ Images</Typography>
-              </Box>
-              <Box className="file-type-badge">
-                <Typography>📝 Word Docs</Typography>
-              </Box>
-            </Box>
-          </Box>
-
-          <Box mt={4} p={3} sx={{ background: 'rgba(0, 122, 255, 0.05)', borderRadius: 2 }}>
-            <Typography variant="body2" color="text.secondary">
-              💡 Tip: For best results, ensure your documents are clear and well-scanned. 
-              Our AI works best with properly formatted documents.
+            <Typography color="text.secondary" sx={{ maxWidth: 300, mx: 'auto' }}>
+              Upload a document to see the magic happen. Our AI will extract and organize the information automatically.
             </Typography>
-          </Box>
+          </motion.div>
         </Box>
       </Paper>
     );

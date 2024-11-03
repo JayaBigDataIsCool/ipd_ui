@@ -8,7 +8,8 @@ import {
   Button,
   Stepper,
   Step,
-  StepLabel
+  StepLabel,
+  Paper
 } from '@mui/material';
 import { motion, AnimatePresence } from 'framer-motion';
 import { DocumentUploader } from './components/DocumentUploader';
@@ -20,6 +21,7 @@ import './App.css';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 
 function App() {
   const [processedDoc, setProcessedDoc] = useState<ProcessedDocument | null>(null);
@@ -31,7 +33,41 @@ function App() {
   const [isUpdating, setIsUpdating] = useState(false);
   const [updateSuccess, setUpdateSuccess] = useState(false);
 
-  const steps = ['Upload Document', 'Review & Validate', 'Confirm & Save'];
+  const steps = [
+    {
+      label: 'Upload Document',
+      description: 'Drag & drop or click to select'
+    },
+    {
+      label: 'Review & Validate',
+      description: 'Verify extracted information'
+    },
+    {
+      label: 'Confirm & Save',
+      description: 'Save processed data'
+    }
+  ];
+
+  const documentTypes = [
+    {
+      name: 'Documents',
+      icon: '📄',
+      description: 'PDFs, Word, Text files',
+      examples: 'Contracts, Reports, Letters'
+    },
+    {
+      name: 'Images',
+      icon: '🖼️',
+      description: 'PNG, JPG, Scanned files',
+      examples: 'Receipts, Business Cards, Forms'
+    },
+    {
+      name: 'Spreadsheets',
+      icon: '📊',
+      description: 'Excel, CSV, Tables',
+      examples: 'Financial Data, Reports, Lists'
+    }
+  ];
 
   const handleFileSelect = async (file: File) => {
     setUploadedFile(file);
@@ -77,110 +113,187 @@ function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      <Container maxWidth={false} className="app-container">
-        <Box mb={6} textAlign="center">
+      <Container className="app-container">
+        <Box className="hero-section" sx={{ mb: 3 }}>
           <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
             transition={{ duration: 0.8 }}
           >
-            <Typography variant="h1" className="app-title" gutterBottom>
-              Intelligent Document Processing
+            <Typography variant="h1" className="app-title">
+              Transform Documents
+              <br />
+              with AI Intelligence
             </Typography>
-            <Typography variant="h6" className="app-subtitle">
-              Upload your document and let AI extract the information
+            <Typography className="app-subtitle">
+              Powered by advanced machine learning for unmatched document understanding
             </Typography>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+            >
+              <Box sx={{
+                display: 'flex',
+                gap: 2,
+                justifyContent: 'center',
+                mt: 4,
+                flexWrap: 'wrap'
+              }}>
+                {[
+                  { icon: '🤖', text: 'AI-Powered Extraction' },
+                  { icon: '⚡️', text: 'Real-time Processing' },
+                  { icon: '🎯', text: '99.9% Accuracy' }
+                ].map((item, index) => (
+                  <motion.div
+                    key={item.text}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.4 + index * 0.1 }}
+                  >
+                    <Box sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 1,
+                      background: 'rgba(0, 122, 255, 0.05)',
+                      borderRadius: 2,
+                      px: 2,
+                      py: 1
+                    }}>
+                      <Typography fontSize="1.2rem">{item.icon}</Typography>
+                      <Typography
+                        sx={{
+                          color: '#007AFF',
+                          fontWeight: 500,
+                          fontSize: '0.9rem'
+                        }}
+                      >
+                        {item.text}
+                      </Typography>
+                    </Box>
+                  </motion.div>
+                ))}
+              </Box>
+            </motion.div>
           </motion.div>
         </Box>
 
-        <Box mb={4}>
-          <Stepper activeStep={activeStep} alternativeLabel>
-            {steps.map((label) => (
-              <Step key={label}>
-                <StepLabel>{label}</StepLabel>
-              </Step>
-            ))}
-          </Stepper>
-        </Box>
-
-        <Grid container spacing={3}>
-          {/* Left side - Document Upload */}
-          <Grid item xs={12} md={8}>
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={`step-${activeStep}`}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                transition={{ duration: 0.5 }}
+        {/* Main Content Area */}
+        <Box className="main-content-section">
+          <Grid container spacing={4} className="main-content-wrapper">
+            {/* Document Display - Left side */}
+            <Grid item xs={12} md={8} lg={9}>
+              <Paper
+                elevation={0}
+                sx={{
+                  height: '100%',
+                  minHeight: '600px',
+                  border: '1px solid rgba(0, 122, 255, 0.1)',
+                  borderRadius: 3,
+                  overflow: 'hidden'
+                }}
               >
-                <DocumentUploader
-                  onFileSelect={handleFileSelect}
-                  processing={processing}
-                  error={error}
-                  uploadedFile={uploadedFile}
-                />
-              </motion.div>
-            </AnimatePresence>
+                {uploadedFile ? (
+                  // Document Preview
+                  <Box sx={{
+                    height: '100%',
+                    width: '100%',
+                    p: 3,
+                    bgcolor: '#fff'
+                  }}>
+                    <object
+                      data={URL.createObjectURL(uploadedFile)}
+                      type={uploadedFile.type}
+                      width="100%"
+                      height="100%"
+                      style={{ border: 'none' }}
+                    >
+                      <Box sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        height: '100%'
+                      }}>
+                        <InsertDriveFileIcon sx={{ fontSize: 60, color: '#007AFF', mb: 2 }} />
+                        <Typography variant="h6">{uploadedFile.name}</Typography>
+                      </Box>
+                    </object>
+                  </Box>
+                ) : (
+                  <DocumentUploader
+                    onFileSelect={handleFileSelect}
+                    processing={processing}
+                    error={error}
+                    uploadedFile={uploadedFile}
+                  />
+                )}
+              </Paper>
+            </Grid>
+
+            {/* Results Panel - Right side */}
+            <Grid item xs={12} md={4} lg={3}>
+              <ProcessingResults
+                document={processedDoc}
+                processing={processing}
+                isUpdating={isUpdating}
+                updateSuccess={updateSuccess}
+              />
+            </Grid>
           </Grid>
 
-          {/* Right side - Processing Results */}
-          <Grid item xs={12} md={4}>
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={`results-${activeStep}`}
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 20 }}
-                transition={{ duration: 0.5 }}
-              >
-                <ProcessingResults
-                  document={processedDoc}
-                  processing={processing}
-                  isUpdating={isUpdating}
-                  updateSuccess={updateSuccess}
-                />
-              </motion.div>
-            </AnimatePresence>
-          </Grid>
-        </Grid>
-
-        {/* Navigation Controls */}
-        <Box
-          mt={4}
-          display="flex"
-          justifyContent="space-between"
-          className="navigation-controls"
-        >
-          <Button
-            startIcon={<ArrowBackIcon />}
-            onClick={handleBack}
-            disabled={activeStep === 0 || processing || isUpdating}
-            variant="outlined"
+          {/* Floating Action Bar */}
+          <motion.div
+            className="floating-action-bar"
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.2 }}
           >
-            Back
-          </Button>
+            <Box className="action-bar-content">
+              <Box className="step-indicator">
+                {steps.map((step, index) => (
+                  <Box
+                    key={step.label}
+                    className={`step-dot ${index <= activeStep ? 'active' : ''}`}
+                  />
+                ))}
+              </Box>
 
-          {activeStep === steps.length - 1 ? (
-            <Button
-              endIcon={<CheckCircleIcon />}
-              onClick={handleConfirm}
-              disabled={!processedDoc || processing || isUpdating}
-              variant="contained"
-              className="confirm-button"
-            >
-              {isUpdating ? 'Saving...' : updateSuccess ? 'Saved!' : 'Confirm & Save'}
-            </Button>
-          ) : (
-            <Button
-              endIcon={<ArrowForwardIcon />}
-              onClick={handleNext}
-              disabled={!processedDoc || processing || isUpdating}
-              variant="contained"
-            >
-              Next
-            </Button>
-          )}
+              <Box className="action-buttons">
+                <Button
+                  startIcon={<ArrowBackIcon />}
+                  onClick={handleBack}
+                  disabled={activeStep === 0 || processing || isUpdating}
+                  variant="text"
+                  className="nav-button back-button"
+                >
+                  Back
+                </Button>
+
+                {activeStep === steps.length - 1 ? (
+                  <Button
+                    endIcon={<CheckCircleIcon />}
+                    onClick={handleConfirm}
+                    disabled={!processedDoc || processing || isUpdating}
+                    variant="contained"
+                    className="confirm-button"
+                  >
+                    {isUpdating ? 'Saving...' : updateSuccess ? 'Saved!' : 'Confirm'}
+                  </Button>
+                ) : (
+                  <Button
+                    endIcon={<ArrowForwardIcon />}
+                    onClick={handleNext}
+                    disabled={!processedDoc || processing || isUpdating}
+                    variant="contained"
+                    className="next-button"
+                  >
+                    Continue
+                  </Button>
+                )}
+              </Box>
+            </Box>
+          </motion.div>
         </Box>
       </Container>
     </ThemeProvider>
