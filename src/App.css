@@ -16,21 +16,35 @@
 }
 
 .app-title {
-  font-size: clamp(2.5rem, 5vw, 4.5rem) !important;
+  font-size: clamp(2.8rem, 6vw, 5rem) !important;
   line-height: 1.1 !important;
-  margin-bottom: 24px !important;
-  background: linear-gradient(135deg,
-      #AF52DE 0%,
-      #FF2D55 25%,
-      #FF3B30 50%,
-      #FF9500 75%,
-      #AF52DE 100%) !important;
-  background-size: 400% 400% !important;
-  -webkit-background-clip: text !important;
-  -webkit-text-fill-color: transparent !important;
   font-weight: 800 !important;
   letter-spacing: -0.02em !important;
-  position: relative !important;
+  background: linear-gradient(300deg,
+      #AF52DE 0%,
+      #FF2D55 20%,
+      #FF3B30 40%,
+      #FF9500 60%,
+      #9B3DE0 80%,
+      #AF52DE 100%) !important;
+  background-size: 200% 200% !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  animation: gradientFlow 8s ease infinite !important;
+}
+
+@keyframes gradientFlow {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 .app-title::after {
@@ -56,13 +70,11 @@
 .app-subtitle {
   font-size: clamp(1.25rem, 2vw, 1.5rem) !important;
   background: linear-gradient(135deg,
-      #AF52DE 0%,
-      #FF2D55 50%,
-      #AF52DE 100%) !important;
+      #9B3DE0 0%,
+      #FF2D55 100%) !important;
   -webkit-background-clip: text !important;
   -webkit-text-fill-color: transparent !important;
   font-weight: 500 !important;
-  background-size: 200% 100% !important;
   opacity: 0.9;
 }
 

@@ -32,10 +32,11 @@ export const ProcessingResults: React.FC<ProcessingResultsProps> = ({
           display="flex" 
           flexDirection="column" 
           alignItems="center" 
-          justifyContent="center"
+          justifyContent="flex-start"
           sx={{ 
             height: '100%',
             p: 4,
+            pt: 8,
             background: 'linear-gradient(135deg, rgba(175, 82, 222, 0.03), rgba(255, 45, 85, 0.03))'
           }}
         >
@@ -43,7 +44,10 @@ export const ProcessingResults: React.FC<ProcessingResultsProps> = ({
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6, ease: "easeOut" }}
-            style={{ textAlign: 'center' }}
+            style={{ 
+              textAlign: 'center',
+              marginTop: '-40px'
+            }}
           >
             <motion.div
               animate={{ 
@@ -67,18 +71,27 @@ export const ProcessingResults: React.FC<ProcessingResultsProps> = ({
               />
             </motion.div>
             <Typography 
-              variant="h6" 
+              variant="h3"
               sx={{
                 background: 'linear-gradient(135deg, #AF52DE, #FF2D55)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
                 fontWeight: 600,
-                mb: 2
+                mb: 2,
+                fontSize: { xs: '2rem', md: '2.5rem' }
               }}
             >
               AI-Powered Document Processing
             </Typography>
-            <Typography color="text.secondary" sx={{ maxWidth: 300, mx: 'auto' }}>
+            <Typography 
+              color="text.secondary" 
+              sx={{ 
+                maxWidth: 300, 
+                mx: 'auto',
+                fontSize: { xs: '1rem', md: '1.1rem' },
+                mb: 6
+              }}
+            >
               Upload a document to see the magic happen. Our AI will extract and organize the information automatically.
             </Typography>
           </motion.div>

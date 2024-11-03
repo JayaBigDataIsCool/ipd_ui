@@ -22,6 +22,14 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
+import SmartToyOutlinedIcon from '@mui/icons-material/SmartToyOutlined';
+import SpeedOutlinedIcon from '@mui/icons-material/SpeedOutlined';
+import VerifiedOutlinedIcon from '@mui/icons-material/VerifiedOutlined';
+import AutoFixHighIcon from '@mui/icons-material/AutoFixHigh';
+import RocketLaunchIcon from '@mui/icons-material/RocketLaunch';
+import WorkspacePremiumIcon from '@mui/icons-material/WorkspacePremium';
+import SecurityIcon from '@mui/icons-material/Security';
+import IntegrationInstructionsIcon from '@mui/icons-material/IntegrationInstructions';
 
 function App() {
   const [processedDoc, setProcessedDoc] = useState<ProcessedDocument | null>(null);
@@ -88,7 +96,13 @@ function App() {
   };
 
   const handleBack = () => {
-    setActiveStep((prev) => Math.max(prev - 1, 0));
+    if (activeStep === 0 && uploadedFile) {
+      // Reset file and processed doc when going back from first step
+      setUploadedFile(null);
+      setProcessedDoc(null);
+    } else {
+      setActiveStep((prev) => Math.max(prev - 1, 0));
+    }
   };
 
   const handleConfirm = async () => {
@@ -111,115 +125,215 @@ function App() {
     }
   };
 
+  const renderDocumentPreview = (file: File) => {
+    const fileType = file.name.split('.').pop()?.toLowerCase();
+    const fileUrl = URL.createObjectURL(file);
+
+    // Images
+    if (['jpg', 'jpeg', 'png', 'gif', 'bmp'].includes(fileType || '')) {
+      return (
+        <Box sx={{ height: '100%', width: '100%', p: 3, bgcolor: '#fff' }}>
+          <img 
+            src={fileUrl} 
+            alt="Preview" 
+            style={{ 
+              maxWidth: '100%', 
+              maxHeight: '100%', 
+              objectFit: 'contain' 
+            }} 
+          />
+        </Box>
+      );
+    }
+
+    // PDFs
+    if (fileType === 'pdf') {
+      return (
+        <Box sx={{ height: '100%', width: '100%', p: 3, bgcolor: '#fff' }}>
+          <object
+            data={fileUrl}
+            type="application/pdf"
+            width="100%"
+            height="100%"
+            style={{ border: 'none' }}
+          >
+            <Typography>PDF preview not available</Typography>
+          </object>
+        </Box>
+      );
+    }
+
+    // Fallback for other file types
+    return (
+      <Box sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: '100%',
+        p: 3
+      }}>
+        <InsertDriveFileIcon sx={{ fontSize: 60, color: '#007AFF', mb: 2 }} />
+        <Typography variant="h6">{file.name}</Typography>
+        <Typography color="text.secondary" sx={{ mt: 1 }}>
+          {(file.size / 1024 / 1024).toFixed(2)} MB • {file.type || 'Unknown type'}
+        </Typography>
+      </Box>
+    );
+  };
+
   return (
     <ThemeProvider theme={theme}>
-      <Container className="app-container">
-        <Box className="hero-section" sx={{ mb: 3 }}>
+      <Container className="app-container" sx={{ py: 2 }}>
+        <Box className="hero-section" sx={{ mb: 2 }}>
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8 }}
           >
-            <Typography variant="h1" className="app-title">
+            <Typography 
+              variant="h1" 
+              className="app-title"
+              sx={{ 
+                fontSize: 'clamp(2.2rem, 4vw, 3.5rem) !important',  // Reduced font size
+                mb: 1  // Reduced margin
+              }}
+            >
               Transform Documents
               <br />
               with AI Intelligence
             </Typography>
-            <Typography className="app-subtitle">
+            <Typography 
+              className="app-subtitle"
+              sx={{ 
+                fontSize: 'clamp(1rem, 1.5vw, 1.2rem) !important',  // Reduced font size
+                mb: 2  // Reduced margin
+              }}
+            >
               Powered by advanced machine learning for unmatched document understanding
             </Typography>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-            >
-              <Box sx={{
-                display: 'flex',
-                gap: 2,
-                justifyContent: 'center',
-                mt: 4,
-                flexWrap: 'wrap'
-              }}>
-                {[
-                  { icon: '🤖', text: 'AI-Powered Extraction' },
-                  { icon: '⚡️', text: 'Real-time Processing' },
-                  { icon: '🎯', text: '99.9% Accuracy' }
-                ].map((item, index) => (
-                  <motion.div
-                    key={item.text}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.4 + index * 0.1 }}
-                  >
-                    <Box sx={{
+
+            {/* Features section */}
+            <Box sx={{
+              display: 'flex',
+              gap: { xs: 1, md: 1.5 },  // Reduced gap
+              justifyContent: 'center',
+              flexWrap: 'nowrap',
+              mt: 2,  // Reduced margin
+              mb: 1,  // Reduced margin
+              maxWidth: '1200px',
+              mx: 'auto'
+            }}>
+              {[
+                { 
+                  icon: <AutoFixHighIcon sx={{ fontSize: '1.4rem' }} />, 
+                  text: 'Smart Analysis',
+                  gradient: 'linear-gradient(135deg, #AF52DE 20%, #FF2D55 90%)'
+                },
+                { 
+                  icon: <RocketLaunchIcon sx={{ fontSize: '1.4rem' }} />, 
+                  text: 'Fast Process',
+                  gradient: 'linear-gradient(135deg, #FF3B30 20%, #FF9500 90%)'
+                },
+                { 
+                  icon: <WorkspacePremiumIcon sx={{ fontSize: '1.4rem' }} />, 
+                  text: 'High Accuracy',
+                  gradient: 'linear-gradient(135deg, #8A2BE2 20%, #FF1493 90%)'
+                },
+                {
+                  icon: <SecurityIcon sx={{ fontSize: '1.4rem' }} />,
+                  text: 'Secure',
+                  gradient: 'linear-gradient(135deg, #34C759 20%, #30B0C7 90%)'
+                },
+                {
+                  icon: <IntegrationInstructionsIcon sx={{ fontSize: '1.4rem' }} />,
+                  text: 'Easy Setup',
+                  gradient: 'linear-gradient(135deg, #007AFF 20%, #5856D6 90%)'
+                }
+              ].map((item, index) => (
+                <motion.div
+                  key={item.text}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ 
+                    delay: 0.5 + index * 0.1,
+                    duration: 0.4,
+                    ease: "easeOut"
+                  }}
+                >
+                  <Box
+                    sx={{
                       display: 'flex',
                       alignItems: 'center',
                       gap: 1,
-                      background: 'rgba(0, 122, 255, 0.05)',
-                      borderRadius: 2,
-                      px: 2,
-                      py: 1
-                    }}>
-                      <Typography fontSize="1.2rem">{item.icon}</Typography>
-                      <Typography
-                        sx={{
-                          color: '#007AFF',
-                          fontWeight: 500,
-                          fontSize: '0.9rem'
-                        }}
-                      >
-                        {item.text}
-                      </Typography>
+                      background: 'rgba(255, 255, 255, 0.95)',
+                      borderRadius: '12px',
+                      px: 1.5,
+                      py: 1,
+                      boxShadow: '0 4px 20px rgba(0, 0, 0, 0.05)',
+                      border: '1px solid rgba(255, 255, 255, 0.8)',
+                      transition: 'all 0.3s ease',
+                      '&:hover': {
+                        transform: 'translateY(-2px)',
+                        boxShadow: '0 8px 30px rgba(0, 0, 0, 0.08)'
+                      }
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        background: item.gradient,
+                        borderRadius: '8px',
+                        p: 0.75,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: 'white',
+                        boxShadow: `0 4px 15px ${item.gradient.split(' ')[2]}25`
+                      }}
+                    >
+                      {item.icon}
                     </Box>
-                  </motion.div>
-                ))}
-              </Box>
-            </motion.div>
+                    <Typography
+                      sx={{
+                        fontWeight: 600,
+                        fontSize: '0.85rem',
+                        background: item.gradient,
+                        WebkitBackgroundClip: 'text',
+                        WebkitTextFillColor: 'transparent',
+                        whiteSpace: 'nowrap'
+                      }}
+                    >
+                      {item.text}
+                    </Typography>
+                  </Box>
+                </motion.div>
+              ))}
+            </Box>
           </motion.div>
         </Box>
 
         {/* Main Content Area */}
-        <Box className="main-content-section">
-          <Grid container spacing={4} className="main-content-wrapper">
+        <Box className="main-content-section" sx={{ pb: 8 }}>
+          <Grid 
+            container 
+            spacing={2}  // Reduced spacing
+            className="main-content-wrapper" 
+            sx={{ minHeight: 'calc(100vh - 350px)' }}  // Reduced height
+          >
             {/* Document Display - Left side */}
             <Grid item xs={12} md={8} lg={9}>
               <Paper
                 elevation={0}
                 sx={{
                   height: '100%',
-                  minHeight: '600px',
+                  minHeight: '500px',  // Reduced height
                   border: '1px solid rgba(0, 122, 255, 0.1)',
                   borderRadius: 3,
                   overflow: 'hidden'
                 }}
               >
                 {uploadedFile ? (
-                  // Document Preview
-                  <Box sx={{
-                    height: '100%',
-                    width: '100%',
-                    p: 3,
-                    bgcolor: '#fff'
-                  }}>
-                    <object
-                      data={URL.createObjectURL(uploadedFile)}
-                      type={uploadedFile.type}
-                      width="100%"
-                      height="100%"
-                      style={{ border: 'none' }}
-                    >
-                      <Box sx={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        height: '100%'
-                      }}>
-                        <InsertDriveFileIcon sx={{ fontSize: 60, color: '#007AFF', mb: 2 }} />
-                        <Typography variant="h6">{uploadedFile.name}</Typography>
-                      </Box>
-                    </object>
-                  </Box>
+                  renderDocumentPreview(uploadedFile)
                 ) : (
                   <DocumentUploader
                     onFileSelect={handleFileSelect}
@@ -233,12 +347,23 @@ function App() {
 
             {/* Results Panel - Right side */}
             <Grid item xs={12} md={4} lg={3}>
-              <ProcessingResults
-                document={processedDoc}
-                processing={processing}
-                isUpdating={isUpdating}
-                updateSuccess={updateSuccess}
-              />
+              <Paper
+                elevation={0}
+                sx={{
+                  height: '100%',
+                  minHeight: '500px',  // Reduced height
+                  border: '1px solid rgba(0, 122, 255, 0.1)',
+                  borderRadius: 3,
+                  overflow: 'hidden'
+                }}
+              >
+                <ProcessingResults
+                  document={processedDoc}
+                  processing={processing}
+                  isUpdating={isUpdating}
+                  updateSuccess={updateSuccess}
+                />
+              </Paper>
             </Grid>
           </Grid>
 
@@ -246,8 +371,9 @@ function App() {
           <motion.div
             className="floating-action-bar"
             initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
+            style={{ bottom: 20 }}  // Reduced bottom spacing
           >
             <Box className="action-bar-content">
               <Box className="step-indicator">
@@ -263,7 +389,7 @@ function App() {
                 <Button
                   startIcon={<ArrowBackIcon />}
                   onClick={handleBack}
-                  disabled={activeStep === 0 || processing || isUpdating}
+                  disabled={(!uploadedFile && activeStep === 0) || processing || isUpdating}
                   variant="text"
                   className="nav-button back-button"
                 >
