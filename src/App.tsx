@@ -12,6 +12,7 @@ import {
   Paper
 } from '@mui/material';
 import { motion, AnimatePresence } from 'framer-motion';
+
 import { DocumentUploader } from './components/DocumentUploader';
 import { ProcessingResults } from './components/ProcessingResults';
 import { ProcessedDocument } from './types/document';
