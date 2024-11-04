@@ -22,6 +22,7 @@ export const DocumentUploader: React.FC<DocumentUploaderProps> = ({
     multiple: false
   });
 
+
   return (
     <Box
       {...getRootProps()}
