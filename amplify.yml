@@ -4,16 +4,13 @@ frontend:
     preBuild:
       commands:
         - npm ci --cache .npm --prefer-offline
-        - npm install -g @craco/craco
-        - npm install terser-webpack-plugin --save-dev
     build:
       commands:
         - npm run build
   artifacts:
-    baseDirectory: build
+    baseDirectory: dist
     files:
-      - '**/*'
+      - "**/*"
   cache:
     paths:
-      - node_modules/**/*
       - .npm/**/*
