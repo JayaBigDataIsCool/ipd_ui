@@ -33,6 +33,7 @@ import SecurityIcon from '@mui/icons-material/Security';
 import IntegrationInstructionsIcon from '@mui/icons-material/IntegrationInstructions';
 import { Authenticator, withAuthenticator } from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
+import { secureLogger } from './utils/secureLogger';
 
 function App() {
   const [processedDoc, setProcessedDoc] = useState<ProcessedDocument | null>(null);
@@ -87,8 +88,11 @@ function App() {
       setError(null);
       const result = await processor.processDocument(file);
       setProcessedDoc(result);
+      secureLogger.log('Document processed successfully');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
+      const errorMessage = err instanceof Error ? err.message : 'An error occurred';
+      secureLogger.error('Document processing failed:', errorMessage);
+      setError(errorMessage);
     } finally {
       setProcessing(false);
     }
@@ -111,10 +115,9 @@ function App() {
   const handleConfirm = async () => {
     setIsUpdating(true);
     try {
-      // Simulate API call to update DynamoDB
       await new Promise(resolve => setTimeout(resolve, 2000));
       setUpdateSuccess(true);
-      // Reset after 2 seconds
+      secureLogger.log('Document saved successfully');
       setTimeout(() => {
         setUpdateSuccess(false);
         setProcessedDoc(null);
@@ -122,6 +125,7 @@ function App() {
         setActiveStep(0);
       }, 2000);
     } catch (error) {
+      secureLogger.error('Failed to update database:', error);
       setError('Failed to update database');
     } finally {
       setIsUpdating(false);

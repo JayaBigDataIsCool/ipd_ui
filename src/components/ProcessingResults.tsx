@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { 
   Box, 
   Typography, 
@@ -11,6 +11,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ProcessedDocument } from '../types/document';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
+import { secureLogger } from '../utils/secureLogger';
 
 interface ProcessingResultsProps {
   document: ProcessedDocument | null;
@@ -25,6 +26,18 @@ export const ProcessingResults: React.FC<ProcessingResultsProps> = ({
   isUpdating = false,
   updateSuccess = false
 }) => {
+  useEffect(() => {
+    if (processing) {
+      secureLogger.log('Document processing started');
+    }
+    if (updateSuccess) {
+      secureLogger.log('Document update successful');
+    }
+    if (isUpdating) {
+      secureLogger.log('Document update in progress');
+    }
+  }, [processing, updateSuccess, isUpdating]);
+
   if (!document && !processing) {
     return (
       <Paper elevation={0} className="document-section" sx={{ height: '100%' }}>

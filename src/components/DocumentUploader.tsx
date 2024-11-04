@@ -3,6 +3,7 @@ import { Box, Typography, Paper } from '@mui/material';
 import { useDropzone } from 'react-dropzone';
 import { motion } from 'framer-motion';
 import FileUploadOutlinedIcon from '@mui/icons-material/FileUploadOutlined';
+import { secureLogger } from '../utils/secureLogger';
 
 interface DocumentUploaderProps {
   onFileSelect: (file: File) => void;
@@ -17,9 +18,18 @@ export const DocumentUploader: React.FC<DocumentUploaderProps> = ({
   uploadedFile
 }) => {
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop: files => onFileSelect(files[0]),
+    onDrop: files => {
+      secureLogger.log('File selected for upload');
+      onFileSelect(files[0]);
+    },
     disabled: processing,
-    multiple: false
+    multiple: false,
+    onDropRejected: () => {
+      secureLogger.warn('File upload rejected');
+    },
+    onError: (error) => {
+      secureLogger.error('File upload error:', error);
+    }
   });
 
 
