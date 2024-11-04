@@ -3,12 +3,18 @@
 
 import { secureConfig } from './config/secure.config';
 
+// Obfuscate sensitive values
+const obfuscateValue = (value: string) => {
+  if (!value) return '';
+  return value.slice(0, 4) + '*'.repeat(value.length - 8) + value.slice(-4);
+};
+
 const awsExports = {
     "aws_project_region": secureConfig.aws.region,
-    "aws_cognito_identity_pool_id": secureConfig.aws.identityPoolId,
+    "aws_cognito_identity_pool_id": obfuscateValue(secureConfig.aws.identityPoolId || ''),
     "aws_cognito_region": secureConfig.aws.region,
-    "aws_user_pools_id": secureConfig.aws.userPoolId,
-    "aws_user_pools_web_client_id": secureConfig.aws.userPoolWebClientId,
+    "aws_user_pools_id": obfuscateValue(secureConfig.aws.userPoolId || ''),
+    "aws_user_pools_web_client_id": obfuscateValue(secureConfig.aws.userPoolWebClientId || ''),
     "oauth": {},
     "aws_cognito_username_attributes": [
         "EMAIL"
@@ -29,5 +35,13 @@ const awsExports = {
         "EMAIL"
     ]
 };
+
+// Prevent object from being logged
+Object.defineProperty(awsExports, 'toString', {
+  value: () => '[Secure Configuration]',
+  enumerable: false,
+});
+
+Object.freeze(awsExports);
 
 export default awsExports;
