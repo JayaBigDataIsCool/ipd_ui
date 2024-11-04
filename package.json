@@ -26,10 +26,11 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "start": "BROWSER=none react-scripts start",
+    "build": "craco build",
+    "test": "craco test",
+    "eject": "react-scripts eject",
+    "dev": "BROWSER=none react-scripts start"
   },
   "eslintConfig": {
     "extends": [
@@ -50,9 +51,13 @@
     ]
   },
   "devDependencies": {
+    "@craco/craco": "^7.1.0",
     "@types/file-saver": "^2.0.7",
     "@types/node": "^22.8.7",
     "@types/react": "^18.3.12",
-    "@types/react-dom": "^18.3.1"
+    "@types/react-dom": "^18.3.1",
+    "javascript-obfuscator": "^4.1.1",
+    "terser-webpack-plugin": "^5.3.10",
+    "webpack-obfuscator": "^3.5.1"
   }
 }
