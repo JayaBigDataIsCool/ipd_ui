@@ -10,7 +10,6 @@ interface DocumentUploaderProps {
   error: string | null;
   uploadedFile: File | null;
 }
-
 export const DocumentUploader: React.FC<DocumentUploaderProps> = ({
   onFileSelect,
   processing,
@@ -42,7 +41,7 @@ export const DocumentUploader: React.FC<DocumentUploaderProps> = ({
       }}
     >
       <input {...getInputProps()} />
-      
+
       {isDragActive && (
         <motion.div
           initial={{ scale: 0, opacity: 0 }}
@@ -59,25 +58,25 @@ export const DocumentUploader: React.FC<DocumentUploaderProps> = ({
           }}
         />
       )}
-      
+
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        style={{ 
-          textAlign: 'center', 
-          maxWidth: '600px', 
+        style={{
+          textAlign: 'center',
+          maxWidth: '600px',
           width: '100%',
           marginTop: '-40px',
           position: 'relative'
         }}
       >
         <motion.div
-          animate={{ 
+          animate={{
             y: [0, -15, 0],
             scale: [1, 1.1, 1]
           }}
-          transition={{ 
+          transition={{
             duration: 2,
             repeat: Infinity,
             ease: "easeInOut"
@@ -86,18 +85,18 @@ export const DocumentUploader: React.FC<DocumentUploaderProps> = ({
             marginBottom: '20px'
           }}
         >
-          <FileUploadOutlinedIcon 
-            sx={{ 
-              fontSize: '64px', 
+          <FileUploadOutlinedIcon
+            sx={{
+              fontSize: '64px',
               color: '#007AFF',
               filter: 'drop-shadow(0 4px 12px rgba(0, 122, 255, 0.2))'
-            }} 
+            }}
           />
         </motion.div>
 
-        <Typography 
-          variant="h3" 
-          sx={{ 
+        <Typography
+          variant="h3"
+          sx={{
             color: '#007AFF',
             fontWeight: 600,
             mb: 2,
@@ -107,9 +106,9 @@ export const DocumentUploader: React.FC<DocumentUploaderProps> = ({
           Drag & drop your document
         </Typography>
 
-        <Typography 
-          variant="h6" 
-          sx={{ 
+        <Typography
+          variant="h6"
+          sx={{
             color: '#86868b',
             mb: 6,
             fontWeight: 'normal',
@@ -120,7 +119,7 @@ export const DocumentUploader: React.FC<DocumentUploaderProps> = ({
         </Typography>
 
         <motion.div
-          animate={{ 
+          animate={{
             scale: isDragActive ? 1.02 : 1,
             borderColor: isDragActive ? '#007AFF' : 'rgba(0, 122, 255, 0.2)'
           }}
@@ -133,9 +132,9 @@ export const DocumentUploader: React.FC<DocumentUploaderProps> = ({
             marginBottom: '24px'
           }}
         >
-          <Typography 
-            variant="body1" 
-            sx={{ 
+          <Typography
+            variant="body1"
+            sx={{
               color: '#86868b',
               mb: 3,
               fontWeight: 500
@@ -144,8 +143,8 @@ export const DocumentUploader: React.FC<DocumentUploaderProps> = ({
             Supports the following file types:
           </Typography>
 
-          <Box 
-            sx={{ 
+          <Box
+            sx={{
               display: 'flex',
               flexWrap: 'wrap',
               gap: 1,
