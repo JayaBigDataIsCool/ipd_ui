@@ -5,105 +5,86 @@ export interface DocumentProcessorService {
   processDocument(file: File): Promise<ProcessedDocument>;
 }
 
-// Define template types to fix type indexing error
-type DocumentTemplate = {
-  title: string;
-  fields: DocumentField[];
-};
-
-type DocumentTemplates = {
-  [key: string]: DocumentTemplate;
-};
-
-// Mock implementation
-export class MockDocumentProcessor implements DocumentProcessorService {
-  private static readonly PROCESSING_DELAY = 1500;
-
-  private static readonly DOCUMENT_TEMPLATES: DocumentTemplates = {
-    invoice: {
-      title: "Invoice Processing",
-      fields: [
-        { key: "invoiceNumber", label: "Invoice Number", type: "string", format: "INV-YYYY-XXXX" },
-        { key: "issueDate", label: "Issue Date", type: "date" },
-        { key: "dueDate", label: "Due Date", type: "date" },
-        { key: "totalAmount", label: "Total Amount", type: "number", prefix: "$" },
-        { key: "taxAmount", label: "Tax Amount", type: "number", prefix: "$" },
-        { key: "vendorName", label: "Vendor Name", type: "string" },
-        { key: "vendorAddress", label: "Vendor Address", type: "string", multiline: true }
-      ]
-    },
-    resume: {
-      title: "Resume Processing",
-      fields: [
-        { key: "fullName", label: "Full Name", type: "string" },
-        { key: "email", label: "Email", type: "string", format: "email" },
-        { key: "phone", label: "Phone", type: "string", format: "phone" },
-        { key: "education", label: "Education", type: "string", multiline: true },
-        { key: "experience", label: "Work Experience", type: "string", multiline: true },
-        { key: "skills", label: "Skills", type: "string", multiline: true }
-      ]
-    }
-  };
-
-  async processDocument(file: File): Promise<ProcessedDocument> {
-    // Simulate processing delay
-    await new Promise(resolve => setTimeout(resolve, MockDocumentProcessor.PROCESSING_DELAY));
-
-    // Randomly select a document type
-    const documentTypes = Object.keys(MockDocumentProcessor.DOCUMENT_TEMPLATES);
-    const randomType = documentTypes[Math.floor(Math.random() * documentTypes.length)];
-    const template = MockDocumentProcessor.DOCUMENT_TEMPLATES[randomType];
-
-    // Generate random values for fields
-    const extractedData = MockDocumentProcessor.generateRandomData(template.fields);
-
-    return {
-      type: randomType,
-      title: template.title,
-      fields: template.fields,
-      extractedData,
-      confidence: Math.random() * 0.3 + 0.7, // Random confidence between 70-100%
-      processingTime: Math.random() * 1000 + 500 // Random processing time 500-1500ms
-    };
-  }
-
-  private static generateRandomData(fields: DocumentField[]): Record<string, any> {
-    const result: Record<string, any> = {};
-    
-    fields.forEach(field => {
-      switch (field.type) {
-        case 'string':
-          if (field.format === 'email') {
-            result[field.key] = 'example@domain.com';
-          } else if (field.format === 'phone') {
-            result[field.key] = '(555) 123-4567';
-          } else if (field.format?.includes('INV')) {
-            result[field.key] = `INV-${new Date().getFullYear()}-${Math.random().toString().slice(2, 6)}`;
-          } else {
-            result[field.key] = `Sample ${field.label}`;
-          }
-          break;
-          
-        case 'date':
-          result[field.key] = new Date().toISOString().split('T')[0];
-          break;
-          
-        case 'number':
-          result[field.key] = (Math.random() * 1000).toFixed(2);
-          break;
-          
-        default:
-          result[field.key] = `Sample ${field.label}`;
-      }
-    });
-    
-    return result;
-  }
-}
-
-// Real implementation (to be implemented later)
+// Real API implementation
 export class ApiDocumentProcessor implements DocumentProcessorService {
+  private readonly API_ENDPOINT = 'https://rwhzxfffd7.execute-api.us-east-1.amazonaws.com/dev';
+  private readonly POLL_INTERVAL = 10000; // 10 seconds
+  private readonly MAX_RETRIES = 30; // 5 minutes maximum polling time
+
   async processDocument(file: File): Promise<ProcessedDocument> {
-    throw new Error('API implementation not yet available');
+    try {
+      // Initial upload
+      const jobId = await this.uploadDocument(file);
+
+      // Poll for results
+      const results = await this.pollForResults(jobId);
+
+      // Transform the results into ProcessedDocument format
+      return this.transformResults(results);
+    } catch (error) {
+      console.error('Document processing error:', error);
+      throw error;
+    }
+  }
+
+  private async uploadDocument(file: File): Promise<string> {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const response = await fetch(this.API_ENDPOINT, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json'
+      },
+      body: formData
+    });
+
+    if (!response.ok) {
+      throw new Error(`Upload failed: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+
+    if (data.status === 'error') {
+      throw new Error(data.message || 'Upload failed');
+    }
+
+    return data.jobId;
+  }
+
+  private async pollForResults(jobId: string): Promise<any> {
+    let retries = 0;
+
+    while (retries < this.MAX_RETRIES) {
+      const response = await fetch(`${this.API_ENDPOINT}/status/${jobId}`);
+      const data = await response.json();
+
+      switch (data.status) {
+        case 'completed':
+          return data.results;
+        case 'failed':
+          throw new Error(data.error || 'Processing failed');
+        case 'processing':
+          // Continue polling
+          await new Promise(resolve => setTimeout(resolve, this.POLL_INTERVAL));
+          retries++;
+          break;
+        default:
+          throw new Error(`Unknown status: ${data.status}`);
+      }
+    }
+
+    throw new Error('Processing timeout - please try again');
+  }
+
+  private transformResults(results: any): ProcessedDocument {
+    return {
+      type: results.data?.document_type || 'Unknown',
+      title: `${results.data?.document_type || 'Document'} Processing`,
+      fields: [], // We don't need to transform fields
+      extractedData: results.data || {}, // Pass the entire data structure as is
+      confidence: parseFloat(results.data?.confidence || '0'),
+      processingTime: 0
+    };
   }
 } 

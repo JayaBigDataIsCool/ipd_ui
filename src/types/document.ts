@@ -6,6 +6,7 @@ export interface DocumentField {
   prefix?: string;
   multiline?: boolean;
   items?: any;
+  confidence?: number;
 }
 
 export interface ProcessedDocument {
