@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   Typography,
@@ -389,6 +389,15 @@ export const ProcessingResults: React.FC<ProcessingResultsProps> = ({
   isUpdating = false,
   updateSuccess = false
 }) => {
+  const [editedValues, setEditedValues] = useState<Record<string, string>>({});
+
+  const handleValueChange = (key: string, value: string) => {
+    setEditedValues(prev => ({
+      ...prev,
+      [key]: value
+    }));
+  };
+
   if (!document && !processing) {
     return <LandingPreview />;
   }
@@ -407,42 +416,65 @@ export const ProcessingResults: React.FC<ProcessingResultsProps> = ({
       key={uniqueKey || label}
       sx={{ 
         display: 'flex',
-        alignItems: 'center',
-        gap: 2,
-        p: 1.5,
-        borderRadius: '8px',
-        border: '1px solid rgba(0, 0, 0, 0.08)',
+        flexDirection: 'column',
+        gap: 1.5,
+        p: 2.5,
+        borderRadius: '12px',
         background: 'white',
-        mb: 1
+        mb: 2,
+        transition: 'all 0.2s ease',
+        border: '1px solid',
+        borderColor: confidence >= 0.9 
+          ? 'rgba(52, 199, 89, 0.15)' 
+          : confidence >= 0.7 
+          ? 'rgba(255, 159, 10, 0.15)' 
+          : 'rgba(255, 59, 48, 0.15)',
+        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.03)',
+        '&:hover': {
+          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.06)',
+          transform: 'translateY(-1px)'
+        }
       }}
     >
-      <Box sx={{ flex: 1 }}>
-        <Typography 
-          sx={{ 
-            fontSize: '0.85rem',
-            color: '#666',
-            mb: 0.5
-          }}
-        >
-          {label}
-        </Typography>
-        <Typography 
-          sx={{ 
-            fontSize: '0.95rem',
-            fontWeight: 500,
-            color: value === 'true' ? '#34C759' : 
-                   value === 'false' ? '#FF3B30' : 
-                   '#1D1D1F'
-          }}
-        >
-          {value || '-'}
-        </Typography>
-      </Box>
+      {/* Label */}
       <Typography 
         sx={{ 
-          fontSize: '0.8rem',
-          color: '#666',
-          whiteSpace: 'nowrap'
+          fontSize: '1rem',
+          fontWeight: 600,
+          color: '#1D1D1F',
+          letterSpacing: '-0.01em'
+        }}
+      >
+        {label.split('_').join(' ')}
+      </Typography>
+
+      {/* Value Field */}
+      <TextField
+        fullWidth
+        size="medium"
+        value={(editedValues[uniqueKey || label] ?? (value || ''))}
+        onChange={(e) => handleValueChange(uniqueKey || label, e.target.value)}
+        variant="outlined"
+        sx={{
+          '& .MuiOutlinedInput-root': {
+            fontSize: '1.1rem',
+            '& .MuiInputBase-input': {
+              padding: '12px 16px'
+            }
+          }
+        }}
+      />
+
+      {/* Confidence Score */}
+      <Typography 
+        sx={{ 
+          fontSize: '0.9rem',
+          fontWeight: 500,
+          color: confidence >= 0.9 
+            ? '#34C759' 
+            : confidence >= 0.7 
+            ? '#FF9F0A' 
+            : '#FF3B30'
         }}
       >
         {(confidence * 100).toFixed(0)}% confidence

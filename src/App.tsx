@@ -365,7 +365,7 @@ function App() {
                 spacing={2}
                 className="main-content-wrapper"
                 sx={{
-                  minHeight: isDocumentView ? 'calc(100vh - 150px)' : 'calc(100vh - 250px)', // Increased height for document view
+                  minHeight: 'calc(100vh - 150px)',
                   position: 'relative'
                 }}
               >
@@ -373,10 +373,10 @@ function App() {
                 <Grid
                   item
                   xs={12}
-                  md={8}
-                  lg={9}
+                  md={7}
+                  lg={8}
                   sx={{
-                    height: 'calc(100vh - 180px)', // Adjusted height
+                    height: 'calc(100vh - 180px)',
                     position: 'relative'
                   }}
                 >
@@ -417,10 +417,10 @@ function App() {
                 <Grid
                   item
                   xs={12}
-                  md={4}
-                  lg={3}
+                  md={5}
+                  lg={4}
                   sx={{
-                    height: isDocumentView ? 'calc(100vh - 100px)' : 'calc(100vh - 200px)', // Increased height for document view
+                    height: 'calc(100vh - 180px)',
                     overflow: 'hidden'
                   }}
                 >
